@@ -2,5 +2,11 @@
     "name": "rttapi",
     "version": "1.0.0",
     "main": "build/index.js",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^18.11.17"
+    },
+    "scripts": {
+        "start": "tsc && node ."
+    }
 }
