@@ -2,13 +2,27 @@ import { RTTServiceFull } from "./api-types"
 import { getCallType, getRunDate, getServiceTime, parseStop } from "./helpers"
 import { Service } from "./types"
 
-export default class ServiceSearch {
+/**
+ * Facilitates service searches by ID
+ */
+export class ServiceSearch {
+    /**
+     * Base64 encoded token for the API
+     */
 	private token: string
 
+    /**
+     * @param token token provided by the client
+     */
 	constructor(token: string) {
 		this.token = token
 	}
 
+    /**
+     * Converts an {@link RTTServiceFull} object into a {@link Service} object
+     * @param rawService Data from the API
+     * @returns A {@link Service} object which is easier to work with
+     */
 	private parseService(rawService: RTTServiceFull): Service {
 		const runDate = getRunDate(rawService.runDate)
 
@@ -81,6 +95,12 @@ export default class ServiceSearch {
 		return service
 	}
 
+    /**
+     * Gets a service by its ID
+     * @param id ID of the service
+     * @param date Date on which the service ran
+     * @returns A promise that resolves to a {@link Service} object
+     */
 	async get(id: string, date = new Date()): Promise<Service> {
 		const url = `https://api.rtt.io/api/v1/json/service/${id}/${date.getFullYear()}/${
 			date.getMonth() + 1
