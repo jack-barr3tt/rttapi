@@ -4,9 +4,12 @@
     "main": "build/index.js",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^18.11.17"
+        "@types/node": "^18.11.17",
+        "typedoc": "^0.23.23",
+        "typescript": "^4.9.4"
     },
     "scripts": {
-        "start": "tsc && node ."
+        "start": "tsc && node .",
+        "doc": "typedoc"
     }
 }
