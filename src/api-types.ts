@@ -18,6 +18,9 @@ export type RTTLocationDetail = {
 	tiploc: string
 	crs: string
 	description: string
+    wttBookedArrival?: string
+    wttBookedDeparture?: string
+    wttBookedPass?: string
 	gbttBookedArrival: string
 	gbttBookedDeparture: string
 	origin: RTTLocationStop[]
@@ -26,9 +29,18 @@ export type RTTLocationDetail = {
 	isPublicCall: boolean
 	realtimeArrival: string
 	realtimeArrivalActual: boolean
+    realtimeArrivalNoReport?: boolean
+    realtimeWttArrivalLateness?: number
+    realtimeGbttArrivalLateness?: number
 	realtimeDeparture: string
 	realtimeDepartureActual: boolean
-	displayAs: string
+    realtimeDepartureNoReport?: boolean
+    realtimeWttDepartureLateness?: number
+    realtimeGbttDepartureLateness?: number
+    realtimePass?: string
+    realtimePassActual?: boolean
+    realtimePassNoReport?: boolean
+	displayAs: "CALL" | "PASS" | "ORIGIN" | "DESTINATION" | "STARTS" | "TERMINATES" | "CANCELLED_CALL" | "CANCELLED_PASS"
 }
 
 export type RTTService = {
@@ -39,7 +51,7 @@ export type RTTService = {
 	runningIdentity: string
 	atocCode: string
 	atocName: string
-	serviceType: string
+	serviceType: "bus" | "ship" | "train"
 	isPassenger: boolean
 }
 
@@ -53,37 +65,50 @@ export type RTTLocationFull = {
 	tiploc: string
 	crs: string
 	description: string
+    wttBookedArrival?: string
+    wttBookedDeparture?: string
+    wttBookedPass?: string
+    gbttBookedArrival?: string
 	gbttBookedDeparture?: string
 	origin: RTTLocationStop[]
 	destination: RTTLocationStop[]
 	isCall: boolean
 	isPublicCall: boolean
+    realtimeArrival?: string
+    realtimeArrivalNoReport?: boolean
+    realtimeWttArrivalLateness?: number
+	realtimeGbttArrivalLateness?: number
 	realtimeDeparture?: string
 	realtimeDepartureActual?: boolean
+    realtimeDepartureNoReport?: boolean
+    realtimeWttDepartureLateness?: number
 	realtimeGbttDepartureLateness?: number
+    realtimePass?: string
+    realtimePassActual?: boolean
+    realtimePassNoReport?: boolean
 	platform?: string
 	platformConfirmed?: boolean
 	platformChanged?: boolean
 	line?: string
 	lineConfirmed?: boolean
-	displayAs: string
-	gbttBookedArrival?: string
-	realtimeArrival?: string
-	realtimeArrivalActual?: boolean
-	realtimeGbttArrivalLateness?: number
-	path?: string
-	pathConfirmed?: boolean
-    serviceLocation?: string
+    path?: string
+    pathConfirmed?: boolean
+    cancelReasonCode?: string
+    cancelReasonShortText?: string
+    cancelReasonLongText?: string
+	displayAs: "CALL" | "PASS" | "ORIGIN" | "DESTINATION" | "STARTS" | "TERMINATES" | "CANCELLED_CALL" | "CANCELLED_PASS"
+    serviceLocation?: "APPR_STAT" | "APPR_PLAT" | "AT_PLAT" | "DEP_PREP" | "DEP_READY"
 }
 
 export type RTTServiceFull = {
 	serviceUid: string
 	runDate: string
-	serviceType: string
+	serviceType: "bus" | "ship" | "train"
 	isPassenger: boolean
 	trainIdentity: string
 	powerType: string
 	trainClass: string
+    sleeper?: string
 	atocCode: string
 	atocName: string
 	performanceMonitored: boolean
