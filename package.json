@@ -1,15 +1,21 @@
 {
     "name": "rttapi",
-    "version": "1.0.0",
-    "main": "build/index.js",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
     "license": "MIT",
     "devDependencies": {
+        "@changesets/cli": "^2.26.0",
+        "@swc/core": "^1.3.31",
         "@types/node": "^18.11.17",
+        "tsup": "^6.5.0",
         "typedoc": "^0.23.23",
         "typescript": "^4.9.4"
     },
     "scripts": {
-        "start": "tsc && node .",
-        "doc": "typedoc"
+        "doc": "typedoc",
+        "build": "tsup src/index.ts --dts --format cjs,esm",
+        "lint": "tsc"
     }
 }
