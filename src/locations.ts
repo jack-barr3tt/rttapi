@@ -1,5 +1,5 @@
 import { RTTLocationSearch } from "./api-types"
-import { getCallType, getRunDate, getServiceTime, parseStop } from "./helpers"
+import { getCallType, getDateForSearch, getRunDate, getServiceTime, parseStop } from "./helpers"
 import { Location } from "./types"
 
 /**
@@ -94,7 +94,7 @@ export class LocationSearch {
   async at(station: string, date?: Date): Promise<Location> {
     const url =
       `https://api.rtt.io/api/v1/json/search/${station}` +
-      (date ? `/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}` : "")
+      (date ? getDateForSearch(date) : "")
     const res = await fetch(url, {
       headers: {
         Authorization: "Basic " + this.token,
@@ -115,7 +115,7 @@ export class LocationSearch {
   async between(from: string, to: string, date?: Date): Promise<Location> {
     const url =
       `https://api.rtt.io/api/v1/json/search/${from}/to/${to}` +
-      (date ? `/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}` : "")
+      (date ? getDateForSearch(date) : "")
     const res = await fetch(url, {
       headers: {
         Authorization: "Basic " + this.token,

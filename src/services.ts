@@ -1,5 +1,5 @@
 import { RTTServiceFull } from "./api-types"
-import { getCallType, getRunDate, getServiceTime, parseStop } from "./helpers"
+import { getCallType, getDateForSearch, getRunDate, getServiceTime, parseStop } from "./helpers"
 import { Service } from "./types"
 
 /**
@@ -102,9 +102,7 @@ export class ServiceSearch {
    * @returns A promise that resolves to a {@link Service} object
    */
   async get(id: string, date = new Date()): Promise<Service> {
-    const url = `https://api.rtt.io/api/v1/json/service/${id}/${date.getFullYear()}/${
-      date.getMonth() + 1
-    }/${date.getDate()}`
+    const url = `https://api.rtt.io/api/v1/json/service/${id}/${getDateForSearch(date)}`
     const res = await fetch(url, {
       headers: {
         Authorization: "Basic " + this.token,
