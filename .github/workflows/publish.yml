@@ -11,13 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: borales/actions-yarn
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: "yarn"
+      - uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
 
-      - run: yarn install --frozen-lockfile
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v2
