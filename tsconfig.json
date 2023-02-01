@@ -73,5 +73,8 @@
     "entryPoints": ["src"],
     "entryPointStrategy": "expand",
     "out": "docs"
-  }
+  },
+  "exclude": [
+    "test"
+  ]
 }
