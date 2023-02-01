@@ -67,11 +67,11 @@ export function parseStop(
 
 /**
  * Convert a JavaScript Date object into a string that can be used in a search URL
- * @param date 
+ * @param date
  * @returns A string in the format YYYY/MM/DD
  */
 export function getDateForSearch(date: Date): string {
-  return `${date.getFullYear()}/${
-    (date.getMonth() < 9 ? "0" : "") + date.getMonth() + 1
-  }/${date.getDate()}`
+  return `${date.getFullYear()}/${(date.getMonth() < 9 ? "0" : "") + (date.getMonth() + 1)}/${
+    (date.getDate() < 10 ? "0" : "") + date.getDate()
+  }`
 }
