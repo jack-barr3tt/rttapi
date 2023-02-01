@@ -19,8 +19,8 @@ jobs:
 
       - run: yarn lint && yarn build
 
-      - run: yarn test
-        with:
-          env:
-            TEST_RTT_USERNAME: ${{ secrets.TEST_RTT_USERNAME }}
-            TEST_RTT_PASSWORD: ${{ secrets.TEST_RTT_PASSWORD }}
+      - name: "Unit tests"
+        run: yarn test
+        env:
+          TEST_RTT_USERNAME: ${{ secrets.TEST_RTT_USERNAME }}
+          TEST_RTT_PASSWORD: ${{ secrets.TEST_RTT_PASSWORD }}
