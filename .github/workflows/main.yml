@@ -15,6 +15,12 @@ jobs:
           cache: "yarn"
       - uses: borales/actions-yarn@v4
         with:
-          cmd: install # will run `yarn install` command
+          cmd: install
 
       - run: yarn lint && yarn build
+
+      - run: yarn test
+        with:
+          env:
+            TEST_RTT_USERNAME: ${{ secrets.TEST_RTT_USERNAME }}
+            TEST_RTT_PASSWORD: ${{ secrets.TEST_RTT_PASSWORD }}
