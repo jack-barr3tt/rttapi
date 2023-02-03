@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.0.4
+
+### Patch Changes
+
+- cfeca4b: Fixed types not being exported
+
 ## 0.0.3
 
 ### Patch Changes
