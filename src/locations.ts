@@ -1,5 +1,11 @@
 import { RTTLocationSearch } from "./api-types"
-import { getCallType, getDateForSearch, getRunDate, getServiceTime, parseStop } from "./helpers"
+import {
+  getCallType,
+  getDateForSearch,
+  getRunDate,
+  getServiceTime,
+  parseOriginDestination,
+} from "./helpers"
 import { Location } from "./types"
 
 /**
@@ -30,12 +36,8 @@ export class LocationSearch {
       tiploc: rawLocation.location.tiploc,
       services: rawLocation.services
         ? rawLocation.services.map((service) => {
-            const origin = parseStop(
+            const { origin, destination } = parseOriginDestination(
               service.locationDetail.origin[0],
-              service.runDate,
-              rawLocation.location.crs
-            )
-            const destination = parseStop(
               service.locationDetail.destination[0],
               service.runDate,
               rawLocation.location.crs

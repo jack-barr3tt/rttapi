@@ -1,5 +1,11 @@
 import { RTTServiceFull } from "./api-types"
-import { getCallType, getDateForSearch, getRunDate, getServiceTime, parseStop } from "./helpers"
+import {
+  getCallType,
+  getDateForSearch,
+  getRunDate,
+  getServiceTime,
+  parseOriginDestination,
+} from "./helpers"
 import { Service } from "./types"
 
 /**
@@ -26,9 +32,11 @@ export class ServiceSearch {
   private parseService(rawService: RTTServiceFull): Service {
     const runDate = getRunDate(rawService.runDate)
 
-    const origin = parseStop(rawService.origin[0], runDate)
-
-    const destination = parseStop(rawService.destination[0], runDate)
+    const { origin, destination } = parseOriginDestination(
+      rawService.origin[0],
+      rawService.destination[0],
+      runDate
+    )
 
     for (const loc of rawService.locations) {
       if (loc.tiploc == origin.tiploc) {
@@ -57,10 +65,18 @@ export class ServiceSearch {
         crs: loc.crs,
         tiploc: loc.tiploc,
         realtime: loc.realtimeActivated,
-        bookedArrival: getServiceTime(runDate, loc.gbttBookedArrival),
-        bookedDeparture: getServiceTime(runDate, loc.gbttBookedDeparture),
-        realtimeArrival: getServiceTime(runDate, loc.realtimeArrival),
-        realtimeDeparture: getServiceTime(runDate, loc.realtimeDeparture),
+        bookedArrival: getServiceTime(runDate, loc.gbttBookedArrival, loc.gbttBookedArrivalNextDay),
+        bookedDeparture: getServiceTime(
+          runDate,
+          loc.gbttBookedDeparture,
+          loc.gbttBookedDepartureNextDay
+        ),
+        realtimeArrival: getServiceTime(runDate, loc.realtimeArrival, loc.realtimeArrivalNextDay),
+        realtimeDeparture: getServiceTime(
+          runDate,
+          loc.realtimeDeparture,
+          loc.realtimeDepartureNextDay
+        ),
         arrivalLateness: loc.realtimeGbttArrivalLateness,
         departureLateness: loc.realtimeGbttDepartureLateness,
         origin,

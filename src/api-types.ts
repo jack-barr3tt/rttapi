@@ -252,9 +252,17 @@ export type RTTLocationFull = {
    */
   gbttBookedArrival?: string
   /**
+   * Whether the arrival takes place the day after the service's run date
+   */
+  gbttBookedArrivalNextDay?: boolean
+  /**
    * Departure time according to the Great British Timetable in format HHmm
    */
   gbttBookedDeparture?: string
+  /**
+   * Whether the departure takes place the day after the service's run date
+   */
+  gbttBookedDepartureNextDay?: boolean
   /**
    * The station(s) from which this service originates
    */
@@ -276,6 +284,10 @@ export type RTTLocationFull = {
    */
   realtimeArrival?: string
   /**
+   * Whether the arrival takes place the day after the service's run date
+   */
+  realtimeArrivalNextDay?: boolean
+  /**
    * Whether the time stated in {@link realtimeArrival} is the actual arrival time or an expected arrival time
    */
   realtimeArrivalActual?: boolean
@@ -295,6 +307,10 @@ export type RTTLocationFull = {
    * Time at which the service actually departed (or is predicted to depart) from this station, in format HHmm
    */
   realtimeDeparture?: string
+  /**
+   * Whether the departure takes place the day after the service's run date
+   */
+  realtimeDepartureNextDay?: boolean
   /**
    * Whether the time stated in {@link realtimeDeparture} is the actual departure time or an expected departure time
    */

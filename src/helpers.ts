@@ -6,10 +6,10 @@ import { CallType, RouteTerminator } from "./types"
  * @param runDate Date of the service so the time is on the correct day
  * @param time Time as a string in the format HHmm
  */
-export function getServiceTime(runDate: Date, time?: string): Date | undefined {
+export function getServiceTime(runDate: Date, time?: string, nextDay = false): Date | undefined {
   if (!time) return undefined
 
-  const date = new Date(runDate)
+  const date = new Date(runDate.getTime() + (nextDay ? 1000 * 60 * 60 * 24 : 0))
   date.setHours(+time.substring(0, 2))
   date.setMinutes(+time.substring(2, 4))
   return date
@@ -49,19 +49,49 @@ export function getRunDate(runDate: string): Date {
  * @param crs The CRS code of the stop since the API doesn't provide it here
  * @returns A {@link RouteTerminator} object representing the stop
  */
-export function parseStop(
-  stop: RTTLocationStop,
-  runDate: Date | string,
-  crs?: string
-): RouteTerminator {
+function parseStop(stop: RTTLocationStop, runDate: Date, crs?: string): RouteTerminator {
   return {
     name: stop.description,
     crs: crs || "PLACEHOLDER",
     tiploc: stop.tiploc,
-    time: getServiceTime(
-      typeof runDate === "string" ? getRunDate(runDate) : runDate,
-      stop.workingTime
-    )!,
+    time: getServiceTime(runDate, stop.workingTime)!,
+  }
+}
+
+/**
+ * Generate a the origin and destination {@link RouteTerminator} for a service
+ * @param origin The origin stop data from the API
+ * @param destination The destination stop data from the API
+ * @param runDate The date the service ran
+ * @param crs The CRS code of the destination since the API doesn't provide it here
+ * @returns A {@link RouteTerminator} object representing the stop
+ */
+export function parseOriginDestination(
+  origin: RTTLocationStop,
+  destination: RTTLocationStop,
+  runDate: Date | string,
+  crs?: string
+) {
+  const formattedRunDate = typeof runDate === "string" ? getRunDate(runDate) : runDate
+
+  const originParsed = parseStop(origin, formattedRunDate, crs)
+
+  let destinationParsed: RouteTerminator
+
+  if (
+    getServiceTime(formattedRunDate, destination.workingTime)!.getTime() <
+    originParsed.time.getTime()
+  )
+    destinationParsed = parseStop(
+      destination,
+      new Date(formattedRunDate.getTime() + 1000 * 60 * 60 * 24),
+      crs
+    )
+  else destinationParsed = parseStop(destination, formattedRunDate, crs)
+
+  return {
+    origin: originParsed,
+    destination: destinationParsed,
   }
 }
 
