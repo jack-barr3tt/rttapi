@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.0.5
+
+### Patch Changes
+
+- e868452: Fixed time issue with services that arrive and depart on different days
+
 ## 0.0.4
 
 ### Patch Changes
