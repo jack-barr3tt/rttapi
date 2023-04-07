@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.0.6
+
+### Patch Changes
+
+- 63a8c91: Add support for service cancellations
+
 ## 0.0.5
 
 ### Patch Changes
