@@ -17,6 +17,7 @@ export enum CallType {
   Origin,
   Call,
   Destination,
+  Cancelled,
 }
 
 export type ServiceAtLocation = BaseService &

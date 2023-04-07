@@ -28,6 +28,8 @@ export function getCallType(type: String): CallType {
       return CallType.Call
     case "DESTINATION":
       return CallType.Destination
+    case "CANCELLED_CALL":
+      return CallType.Cancelled
     default:
       return CallType.Call
   }

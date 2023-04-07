@@ -6,7 +6,7 @@ import {
   getServiceTime,
   parseOriginDestination,
 } from "./helpers"
-import { Service } from "./types"
+import { CallType, Service } from "./types"
 
 /**
  * Facilitates service searches by ID
@@ -104,6 +104,15 @@ export class ServiceSearch {
           : undefined,
         callType: getCallType(loc.displayAs),
         atPlatform: !!loc.serviceLocation,
+        cancelled: getCallType(loc.displayAs) == CallType.Cancelled,
+        cancelledReason:
+          getCallType(loc.displayAs) == CallType.Cancelled
+            ? {
+                short: loc.cancelReasonShortText,
+                long: loc.cancelReasonLongText,
+                code: loc.cancelReasonCode,
+              }
+            : undefined,
       })),
       realtime: rawService.realtimeActivated,
     }
