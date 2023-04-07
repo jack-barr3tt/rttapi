@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.0.8
+
+### Patch Changes
+
+- 042b0d6: Fixed types for cancelled services again
+
 ## 0.0.7
 
 ### Patch Changes
