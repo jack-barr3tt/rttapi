@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.0.7
+
+### Patch Changes
+
+- f7c0bed: Fixed type issue with cancelled services
+
 ## 0.0.6
 
 ### Patch Changes
