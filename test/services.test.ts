@@ -2,7 +2,7 @@ import { RTTClient } from "../dist"
 import dotenv from "dotenv"
 import { ServiceAtLocation } from "../src/types"
 
-describe("Location search", () => {
+describe("Service search", () => {
   dotenv.config()
 
   const client = new RTTClient(process.env.TEST_RTT_USERNAME!, process.env.TEST_RTT_PASSWORD!)

@@ -77,6 +77,12 @@ export type Stop = LocationIdentity & {
   path?: Path
   callType: CallType
   atPlatform: boolean
+  cancelled: boolean
+  cancelledReason?: {
+    code: string
+    short: string
+    long: string
+  }
 }
 
 export type Service = BaseService & {

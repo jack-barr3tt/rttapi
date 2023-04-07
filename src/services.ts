@@ -108,9 +108,9 @@ export class ServiceSearch {
         cancelledReason:
           getCallType(loc.displayAs) == CallType.Cancelled
             ? {
-                short: loc.cancelReasonShortText,
-                long: loc.cancelReasonLongText,
-                code: loc.cancelReasonCode,
+                short: loc.cancelReasonShortText!,
+                long: loc.cancelReasonLongText!,
+                code: loc.cancelReasonCode!,
               }
             : undefined,
       })),
