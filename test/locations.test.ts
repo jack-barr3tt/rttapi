@@ -9,13 +9,13 @@ describe("Location search", () => {
   it("Can get a location without a date", async () => {
     const location = await client.locations.at("EUS")
     expect(location).toBeDefined()
-    expect(location.name).toBe("London Euston")
+    expect(location.location.name).toBe("London Euston")
   })
 
   it("Can get a location with a date", async () => {
     const location = await client.locations.at("EUS", new Date())
     expect(location).toBeDefined()
-    expect(location.name).toBe("London Euston")
+    expect(location.location.name).toBe("London Euston")
   })
 
   it("Throws an error if the CRS code is invalid", async () => {
