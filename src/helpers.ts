@@ -3,12 +3,25 @@
  * @param runDate Date of the service so the time is on the correct day
  * @param time Time as a string in the format HHmm
  */
-export function getServiceTime(runDate: string, time: string, nextDay = false): Date {
-  console.log(runDate, time, nextDay)
+export function getServiceTime(
+  runDate: string,
+  time: string | undefined,
+  isAfter?: string
+): Date | undefined {
+  if (!time) return undefined
+
   const timeRegex = /\b(\d{4}|\d{6})\b/
   if (!timeRegex.test(time)) throw new Error("Invalid time format")
 
-  const date = new Date(getRunDate(runDate).getTime() + (nextDay ? 1000 * 60 * 60 * 24 : 0))
+  const date = new Date(getRunDate(runDate).getTime())
+
+  if (isAfter) {
+    const afterTime = getServiceTime(runDate, isAfter)
+    if (afterTime && afterTime.getTime() > date.getTime()) {
+      date.setDate(date.getDate() + 1)
+    }
+  }
+
   // Handle hours and minutes
   date.setHours(+time.substring(0, 2))
   date.setMinutes(+time.substring(2, 4))
@@ -24,6 +37,9 @@ export function getServiceTime(runDate: string, time: string, nextDay = false): 
  * @returns A Date object representing when the service ran
  */
 export function getRunDate(runDate: string): Date {
+  const dateRegex = /\b(\d{4}-\d{2}-\d{2})\b/
+  if (!dateRegex.test(runDate)) throw new Error("Invalid date format")
+
   return new Date(runDate + "T00:00:00")
 }
 

@@ -1,11 +1,11 @@
 import { getDateForSearch } from "./helpers"
-import { mapService } from "./mapping"
-import { Service } from "./types"
+import { mapService, mapServiceDetailed } from "./mapping"
+import { Service, ServiceDetailed } from "./types"
 
 /**
  * Facilitates service searches by ID
  */
-export class ServiceSearch {
+abstract class ServiceSearch {
   /**
    * Base64 encoded token for the API
    */
@@ -24,15 +24,39 @@ export class ServiceSearch {
    * @param date Date on which the service ran
    * @returns A promise that resolves to a {@link Service} object
    */
-  async get(id: string, date = new Date()): Promise<Service> {
+  protected async getRaw(id: string, date = new Date()) {
     const url = `https://api.rtt.io/api/v1/json/service/${id}/${getDateForSearch(date)}`
     const res = await fetch(url, {
       headers: {
         Authorization: "Basic " + this.token,
       },
     })
-    const data = await res.json()
+    return res.json()
+  }
+}
 
-    return mapService(data)
+export class ServiceSearchSimple extends ServiceSearch {
+  /**
+   * Gets a service by its ID
+   * @param id ID of the service
+   * @param date Date on which the service ran
+   * @returns A promise that resolves to a {@link Service} object
+   */
+  public async get(id: string, date = new Date()): Promise<Service> {
+    const raw = await this.getRaw(id, date)
+    return mapService(raw)
+  }
+}
+
+export class ServiceSearchDetailed extends ServiceSearch {
+  /**
+   * Gets a service by its ID
+   * @param id ID of the service
+   * @param date Date on which the service ran
+   * @returns A promise that resolves to a {@link Service} object
+   */
+  public async get(id: string, date = new Date()): Promise<ServiceDetailed> {
+    const raw = await this.getRaw(id, date)
+    return mapServiceDetailed(raw)
   }
 }

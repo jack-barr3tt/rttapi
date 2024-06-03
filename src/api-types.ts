@@ -1,72 +1,68 @@
 export type RTTLocationDetail = {
   name: string
   crs: string
-  tiploc: string[] | string
+  tiploc: string | string[]
   country: string
   system: string
 }
 
-export type RTTLocationContainer = {
-  locationDetail: RTTLocation
+type RTTLocationContainerBase = {
   serviceUid: string
   runDate: string
-  trainIdentity: string
   runningIdentity: string
   atocCode: string
   atocName: string
   serviceType: string
   isPassenger: boolean
   plannedCancel: boolean
-  origin: RTTPair[]
-  destination: RTTPair[]
   countdownMinutes: number
 }
 
+export type RTTLocationContainer = RTTLocationContainerBase & {
+  locationDetail: RTTLocation
+  origin?: RTTPair[]
+  destination?: RTTPair[]
+}
+
+export type RTTLocationContainerDetailed = RTTLocationContainerBase & {
+  locationDetail: RTTLocationDetailed
+  trainIdentity: string
+  origin?: RTTPairDetailed[]
+  destination?: RTTPairDetailed[]
+}
+
 export type RTTPair = {
-  tiploc: string[] | string
   description: string
-  workingTime: string
   publicTime: string
 }
 
-export type RTTLocation = {
+export type RTTPairDetailed = RTTPair & {
+  tiploc: string | string[]
+  workingTime: string
+}
+
+type RTTLocationBase = {
   realtimeActivated: boolean
-  tiploc: string[] | string
-  crs: string
+  tiploc: string | string[]
+  crs?: string
   description: string
-  wttBookedArrival: string
-  wttBookedDeparture: string
-  wttBookedPass: string
-  gbttBookedArrival: string
-  gbttBookedDeparture: string
-  origin: RTTPair[]
-  destination: RTTPair[]
-  isCall: boolean
+  gbttBookedArrival?: string
+  gbttBookedDeparture?: string
   isCallPublic: boolean
-  realtimeArrival: string
+  realtimeArrival?: string
   realtimeArrivalActual: boolean
   realtimeArrivalNoReport: boolean
-  realtimeWttArrivalLateness: number
   realtimeGbttArrivalLateness: number
-  realtimeDeparture: string
+  realtimeDeparture?: string
   realtimeDepartureActual: boolean
   realtimeDepartureNoReport: boolean
-  realtimeWttDepartureLateness: number
   realtimeGbttDepartureLateness: number
-  realtimePass: string
-  realtimePassActual: boolean
-  realtimePassNoReport: boolean
-  realtimeWttPassLateness: number
   platform: string
   platformConfirmed: boolean
   platformChanged: boolean
-  line: string
-  lineConfirmed: boolean
-  path: string
-  pathConfirmed: boolean
-  cancelReasonCode: string
-  cancelReasonShortText: string
-  cancelReasonLongText: string
+  cancelReasonCode?: string
+  cancelReasonShortText?: string
+  cancelReasonLongText?: string
   displayAs:
     | "CALL"
     | "PASS"
@@ -76,7 +72,32 @@ export type RTTLocation = {
     | "TERMINATES"
     | "CANCELLED_CALL"
     | "CANCELLED_PASS"
-  serviceLocation: "APPR_STAT" | "APPR_PLAT" | "AT_PLAT" | "DEP_PREP" | "DEP_READY"
+  serviceLocation?: "APPR_STAT" | "APPR_PLAT" | "AT_PLAT" | "DEP_PREP" | "DEP_READY"
+}
+
+export type RTTLocation = RTTLocationBase & {
+  origin: RTTPair[]
+  destination: RTTPair[]
+  isCallPublic: boolean
+}
+
+export type RTTLocationDetailed = RTTLocationBase & {
+  origin: RTTPairDetailed[]
+  destination: RTTPairDetailed[]
+  wttBookedArrival?: string
+  wttBookedDeparture?: string
+  wttBookedPass?: string
+  isCall: boolean
+  realtimeWttDepartureLateness: number
+  realtimeWttArrivalLateness: number
+  realtimePass?: string
+  realtimePassActual: boolean
+  realtimePassNoReport: boolean
+  realtimeWttPassLateness: number
+  line: string
+  lineConfirmed: boolean
+  path: string
+  pathConfirmed: boolean
 }
 
 export type RTTLocationFilter = {
@@ -84,27 +105,43 @@ export type RTTLocationFilter = {
   destination?: RTTLocationDetail
 }
 
-export type RTTContainer = {
+type RTTContainerBase = {
   location: RTTLocationDetail
   filter?: RTTLocationFilter
+}
+
+export type RTTContainer = RTTContainerBase & {
   services: RTTLocationContainer[]
 }
 
-export type RTTService = {
+export type RTTContainerDetailed = RTTContainerBase & {
+  services: RTTLocationContainerDetailed[]
+}
+
+type RTTServiceBase = {
   serviceUid: string
   runDate: string
   serviceType: "bus" | "ship" | "train"
   isPassenger: boolean
-  trainIdentity: string
-  powerType: string
-  trainClass: string
-  sleeper: string
+  trainClass?: string
+  sleeper?: string
   atocCode: string
   atocName: string
   performanceMonitored: boolean
+  realtimeActivated: boolean
+  runningIdentity: string
+}
+
+export type RTTService = RTTServiceBase & {
   origin: RTTPair[]
   destination: RTTPair[]
   locations: RTTLocation[]
-  realtimeActivated: boolean
-  runningIdentity: string
+}
+
+export type RTTServiceDetailed = RTTServiceBase & {
+  trainIdentity: string
+  powerType: string
+  origin: RTTPairDetailed[]
+  destination: RTTPairDetailed[]
+  locations: RTTLocationDetailed[]
 }
