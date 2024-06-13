@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.1.0
+
+### Minor Changes
+
+- dc77e83: Update types to match API return format much more closely
+
 ## 0.0.8
 
 ### Patch Changes
