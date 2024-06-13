@@ -28,6 +28,11 @@ import {
   ServiceDetailed,
 } from "./types"
 
+export function handleError(data: any) {
+  if (data.error) throw new Error(data.error)
+  return data
+}
+
 export function mapContainer(inContainer: RTTContainer): Container {
   return {
     location: mapLocationDetail(inContainer.location),
@@ -69,10 +74,13 @@ function mapLocationFilter(
 function mapLocationContainer(inLocationContainer: RTTLocationContainer): LocationContainer {
   return {
     ...inLocationContainer,
-    ...originDestinationTiming(
-      inLocationContainer.runDate,
-      inLocationContainer.origin,
-      inLocationContainer.destination
+    origin: inLocationContainer.origin?.map((v) => mapPair(v, inLocationContainer.runDate, false)),
+    destination: inLocationContainer.destination?.map((v) =>
+      mapPair(
+        v,
+        inLocationContainer.runDate,
+        inLocationContainer.locationDetail.gbttBookedArrivalNextDay
+      )
     ),
     locationDetail: mapLocation(inLocationContainer.locationDetail, inLocationContainer.runDate),
     runDate: getRunDate(inLocationContainer.runDate),
@@ -84,10 +92,15 @@ function mapLocationContainerDetailed(
 ): LocationContainerDetailed {
   return {
     ...inLocationContainer,
-    ...originDestinationTimingDetailed(
-      inLocationContainer.runDate,
-      inLocationContainer.origin,
-      inLocationContainer.destination
+    origin: inLocationContainer.origin?.map((v) =>
+      mapPairDetailed(v, inLocationContainer.runDate, false)
+    ),
+    destination: inLocationContainer.destination?.map((v) =>
+      mapPairDetailed(
+        v,
+        inLocationContainer.runDate,
+        inLocationContainer.locationDetail.gbttBookedArrivalNextDay
+      )
     ),
     locationDetail: mapLocationDetailed(
       inLocationContainer.locationDetail,
@@ -100,20 +113,31 @@ function mapLocationContainerDetailed(
 function mapLocation(inLocation: RTTLocation, runDate: string): LocationDetail {
   return {
     ...inLocation,
-    ...originDestinationTiming(runDate, inLocation.origin, inLocation.destination),
+    origin: inLocation.origin?.map((v) => mapPair(v, runDate, false)),
+    destination: inLocation.destination?.map((v) =>
+      mapPair(v, runDate, inLocation.gbttBookedDepartureNextDay)
+    ),
     tiploc: mapTiploc(inLocation.tiploc),
     gbttBookedArrival: getServiceTime(
       runDate,
       inLocation.gbttBookedArrival,
-      inLocation.gbttBookedDeparture
+      inLocation.gbttBookedArrivalNextDay
     ),
-    gbttBookedDeparture: getServiceTime(runDate, inLocation.gbttBookedDeparture),
+    gbttBookedDeparture: getServiceTime(
+      runDate,
+      inLocation.gbttBookedDeparture,
+      inLocation.gbttBookedArrivalNextDay
+    ),
     realtimeArrival: getServiceTime(
       runDate,
       inLocation.realtimeArrival,
-      inLocation.realtimeDeparture
+      inLocation.realtimeArrivalNextDay
     ),
-    realtimeDeparture: getServiceTime(runDate, inLocation.realtimeDeparture),
+    realtimeDeparture: getServiceTime(
+      runDate,
+      inLocation.realtimeDeparture,
+      inLocation.realtimeDepartureNextDay
+    ),
   }
 }
 
@@ -127,39 +151,62 @@ function mapLocationDetailed(
     gbttBookedArrival: getServiceTime(
       runDate,
       inLocation.gbttBookedArrival,
-      inLocation.gbttBookedDeparture
+      inLocation.gbttBookedArrivalNextDay
     ),
-    gbttBookedDeparture: getServiceTime(runDate, inLocation.gbttBookedDeparture),
-    ...originDestinationTimingDetailed(runDate, inLocation.origin, inLocation.destination),
+    gbttBookedDeparture: getServiceTime(
+      runDate,
+      inLocation.gbttBookedDeparture,
+      inLocation.gbttBookedDepartureNextDay
+    ),
+    origin: inLocation.origin?.map((v) => mapPairDetailed(v, runDate, false)),
+    destination: inLocation.destination?.map((v) =>
+      mapPairDetailed(v, runDate, inLocation.gbttBookedDepartureNextDay)
+    ),
     realtimeArrival: getServiceTime(
       runDate,
       inLocation.realtimeArrival,
-      inLocation.realtimeDeparture
+      inLocation.realtimeArrivalNextDay
     ),
-    realtimeDeparture: getServiceTime(runDate, inLocation.realtimeDeparture),
+    realtimeDeparture: getServiceTime(
+      runDate,
+      inLocation.realtimeDeparture,
+      inLocation.realtimeDepartureNextDay
+    ),
     wttBookedArrival: getServiceTime(
       runDate,
       inLocation.wttBookedArrival,
-      inLocation.wttBookedDeparture
+      inLocation.wttBookedArrivalNextDay
     ),
-    wttBookedDeparture: getServiceTime(runDate, inLocation.wttBookedDeparture),
-    wttBookedPass: getServiceTime(runDate, inLocation.wttBookedPass, inLocation.wttBookedDeparture),
-    realtimePass: getServiceTime(runDate, inLocation.realtimePass, inLocation.realtimeDeparture),
+    wttBookedDeparture: getServiceTime(
+      runDate,
+      inLocation.wttBookedDeparture,
+      inLocation.wttBookedDepartureNextDay
+    ),
+    wttBookedPass: getServiceTime(
+      runDate,
+      inLocation.wttBookedPass,
+      inLocation.wttBookedPassNextDay
+    ),
+    realtimePass: getServiceTime(runDate, inLocation.realtimePass, inLocation.realtimePassNextDay),
   }
 }
 
-function mapPair(inPair: RTTPair, runDate: string): Pair {
+function mapPair(inPair: RTTPair, runDate: string, nextDay: boolean | undefined): Pair {
   return {
     ...inPair,
-    publicTime: getServiceTime(runDate, inPair.publicTime),
+    publicTime: getServiceTime(runDate, inPair.publicTime, nextDay),
   }
 }
 
-function mapPairDetailed(inPair: RTTPairDetailed, runDate: string): PairDetailed {
+function mapPairDetailed(
+  inPair: RTTPairDetailed,
+  runDate: string,
+  nextDay: boolean | undefined
+): PairDetailed {
   return {
     ...inPair,
-    publicTime: getServiceTime(runDate, inPair.publicTime),
-    workingTime: getServiceTime(runDate, inPair.workingTime),
+    publicTime: getServiceTime(runDate, inPair.publicTime, nextDay),
+    workingTime: getServiceTime(runDate, inPair.workingTime, nextDay),
     tiploc: mapTiploc(inPair.tiploc),
   }
 }
@@ -167,7 +214,14 @@ function mapPairDetailed(inPair: RTTPairDetailed, runDate: string): PairDetailed
 export function mapService(inService: RTTService): Service {
   return {
     ...inService,
-    ...originDestinationTiming(inService.runDate, inService.origin, inService.destination),
+    origin: inService.origin.map((v) => mapPair(v, inService.runDate, false)),
+    destination: inService.destination.map((v) =>
+      mapPair(
+        v,
+        inService.runDate,
+        inService.locations[inService.locations.length - 1].gbttBookedArrivalNextDay
+      )
+    ),
     runDate: getRunDate(inService.runDate),
     locations: inService.locations.map((v) => mapLocation(v, inService.runDate)),
   }
@@ -176,66 +230,15 @@ export function mapService(inService: RTTService): Service {
 export function mapServiceDetailed(inService: RTTServiceDetailed): ServiceDetailed {
   return {
     ...inService,
-    ...originDestinationTimingDetailed(inService.runDate, inService.origin, inService.destination),
+    origin: inService.origin.map((v) => mapPairDetailed(v, inService.runDate, false)),
+    destination: inService.destination.map((v) =>
+      mapPairDetailed(
+        v,
+        inService.runDate,
+        inService.locations[inService.locations.length - 1].gbttBookedArrivalNextDay
+      )
+    ),
     runDate: getRunDate(inService.runDate),
     locations: inService.locations.map((v) => mapLocationDetailed(v, inService.runDate)),
   }
-}
-
-function originDestinationTiming(
-  runDate: string,
-  origin_?: RTTPair[],
-  destination_?: RTTPair[]
-): { origin: Pair[]; destination: Pair[] } {
-  if (!origin_ || !destination_) {
-    return { origin: [], destination: [] }
-  }
-
-  const origin = origin_.map((v) => mapPair(v, runDate))
-  const destination = destination_.map((v) => mapPair(v, runDate))
-  const lastOrigin = origin.reduce((prev, curr) =>
-    prev.publicTime && curr.publicTime && prev.publicTime < curr.publicTime ? prev : curr
-  )
-
-  return {
-    origin,
-    destination: destination.map((v) =>
-      v.publicTime && lastOrigin?.publicTime && v.publicTime < lastOrigin?.publicTime
-        ? {
-            ...v,
-            publicTime: new Date(v.publicTime.getTime() + 24 * 60 * 60 * 1000),
-          }
-        : v
-    ),
-  }
-}
-
-function originDestinationTimingDetailed(
-  runDate: string,
-  origin_?: RTTPairDetailed[],
-  destination_?: RTTPairDetailed[]
-): { origin: PairDetailed[]; destination: PairDetailed[] } {
-  if (!origin_ || !destination_) {
-    return { origin: [], destination: [] }
-  }
-
-  const origin = origin_.map((v) => mapPairDetailed(v, runDate))
-  let destination = destination_.map((v) => mapPairDetailed(v, runDate))
-  const lastOrigin = origin.reduce((prev, curr) =>
-    prev.publicTime && curr.publicTime && prev.publicTime < curr.publicTime ? prev : curr
-  )
-
-  destination = destination.map((v) =>
-    v.publicTime && lastOrigin?.publicTime && v.publicTime < lastOrigin?.publicTime
-      ? {
-          ...v,
-          publicTime: new Date(v.publicTime.getTime() + 24 * 60 * 60 * 1000),
-          workingTime: v.workingTime
-            ? new Date(v.workingTime.getTime() + 24 * 60 * 60 * 1000)
-            : undefined,
-        }
-      : v
-  )
-
-  return { origin, destination }
 }

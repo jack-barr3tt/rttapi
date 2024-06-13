@@ -1,5 +1,5 @@
 import { getDateForSearch } from "./helpers"
-import { mapContainer, mapContainerDetailed } from "./mapping"
+import { handleError, mapContainer, mapContainerDetailed } from "./mapping"
 import { Container, ContainerDetailed } from "./types"
 
 /**
@@ -18,6 +18,12 @@ abstract class LocationSearch {
     this.token = token
   }
 
+  /**
+   * Get raw data from the API for services at a given location
+   * @param station CRS code of the station to search
+   * @param date Date to search for services on
+   * @returns Raw JSON data from the API
+   */
   protected async atRaw(station: string, date?: Date) {
     const url =
       `https://api.rtt.io/api/v1/json/search/${station}` +
@@ -27,9 +33,17 @@ abstract class LocationSearch {
         Authorization: "Basic " + this.token,
       },
     })
-    return res.json()
+    const data = await res.json()
+    return handleError(data)
   }
 
+  /**
+   * Get raw data from the API for services between two given locations
+   * @param from CRS code of the origin station
+   * @param to CRS code of the destination station
+   * @param date Date to search for services on
+   * @returns Raw JSON data from the API
+   */
   protected async betweenRaw(from: string, to: string, date?: Date) {
     const url =
       `https://api.rtt.io/api/v1/json/search/${from}/to/${to}` +
@@ -39,7 +53,8 @@ abstract class LocationSearch {
         Authorization: "Basic " + this.token,
       },
     })
-    return res.json()
+    const data = await res.json()
+    return handleError(data)
   }
 }
 

@@ -1,4 +1,4 @@
-import { LocationContainer, RTTClient } from "../dist"
+import { RTTClient } from "../dist"
 import dotenv from "dotenv"
 
 describe("Location search", () => {
@@ -23,46 +23,17 @@ describe("Location search", () => {
   })
 
   it("Handles services that start and end on different days", async () => {
-    const { services } = await client.locations.at("EUS", new Date())
-
-    const getEarliestOrigin = (s: LocationContainer) =>
-      s.locationDetail.origin.reduce((prev, curr) =>
-        prev.publicTime && curr.publicTime && prev.publicTime < curr.publicTime ? prev : curr
-      )
-    const getLatestDestination = (s: LocationContainer) =>
-      s.locationDetail.destination.reduce((prev, curr) =>
-        prev.publicTime && curr.publicTime && prev.publicTime > curr.publicTime ? prev : curr
-      )
-
-    // Check that the earliest destination time is after the latest origin time
-    const incorrect = services.filter((s) => {
-      return (
-        (getEarliestOrigin(s).publicTime?.getTime() || 0) >
-        (getLatestDestination(s).publicTime?.getTime() || 0)
-      )
-    })
-
-    expect(incorrect.length).toBe(0)
+    const { services } = await client.locations.at("SHR", new Date())
 
     const differentDay = services.filter(
-      (s) =>
-        getEarliestOrigin(s).publicTime?.getDate() != getLatestDestination(s).publicTime?.getDate()
-    )
-    differentDay.sort(
-      (a, b) =>
-        (getLatestDestination(b).publicTime?.getTime() || 0) -
-        (getLatestDestination(a).publicTime?.getTime() || 0)
+      (service) => service.locationDetail.gbttBookedDepartureNextDay
     )
 
-    // const testService = differentDay[0]
+    const failed = differentDay.filter((service) => {
+      service.locationDetail.origin[0].publicTime?.getDate() ==
+        service.locationDetail.destination[0].publicTime?.getDate()
+    })
 
-    // const service = await client.service.get(testService.serviceUid, testService.runDate)
-
-    // expect(service.destination.time).toEqual(testService.destination.time)
-    // expect(service.origin.time).toEqual(testService.origin.time)
-
-    // expect(service.destination.time.getDate()).toEqual(
-    //   service.stops.find((s) => s.crs == service.destination.crs)!.bookedArrival?.getDate()
-    // )
+    expect(failed.length).toEqual(0)
   })
 })

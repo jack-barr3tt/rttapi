@@ -1,5 +1,5 @@
 import { getDateForSearch } from "./helpers"
-import { mapService, mapServiceDetailed } from "./mapping"
+import { handleError, mapService, mapServiceDetailed } from "./mapping"
 import { Service, ServiceDetailed } from "./types"
 
 /**
@@ -19,10 +19,10 @@ abstract class ServiceSearch {
   }
 
   /**
-   * Gets a service by its ID
+   * Get raw data from the API for a service
    * @param id ID of the service
-   * @param date Date on which the service ran
-   * @returns A promise that resolves to a {@link Service} object
+   * @param date Date to search for services on
+   * @returns Raw JSON data from the API
    */
   protected async getRaw(id: string, date = new Date()) {
     const url = `https://api.rtt.io/api/v1/json/service/${id}/${getDateForSearch(date)}`
@@ -31,7 +31,8 @@ abstract class ServiceSearch {
         Authorization: "Basic " + this.token,
       },
     })
-    return res.json()
+    const data = await res.json()
+    return handleError(data)
   }
 }
 

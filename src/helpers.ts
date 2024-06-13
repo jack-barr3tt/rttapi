@@ -2,11 +2,12 @@
  * Convert a time as a string to a Date object, or undefined if there is no time given
  * @param runDate Date of the service so the time is on the correct day
  * @param time Time as a string in the format HHmm
+ * @param isNextDay Whether the service runs past midnight
  */
 export function getServiceTime(
   runDate: string,
   time: string | undefined,
-  isAfter?: string
+  isNextDay: boolean | undefined
 ): Date | undefined {
   if (!time) return undefined
 
@@ -15,18 +16,14 @@ export function getServiceTime(
 
   const date = new Date(getRunDate(runDate).getTime())
 
-  if (isAfter) {
-    const afterTime = getServiceTime(runDate, isAfter)
-    if (afterTime && afterTime.getTime() > date.getTime()) {
-      date.setDate(date.getDate() + 1)
-    }
-  }
-
   // Handle hours and minutes
   date.setHours(+time.substring(0, 2))
   date.setMinutes(+time.substring(2, 4))
   // Handle seconds if they are present
   if (time.length === 6) date.setSeconds(+time.substring(4, 6))
+
+  // Handle services that run past midnight
+  if (isNextDay) date.setDate(date.getDate() + 1)
 
   return date
 }

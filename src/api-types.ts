@@ -1,16 +1,31 @@
 /*
 Type documentation for the raw responses from the Realtime Trains API
-All documentation here is sourced from the following pages:
+Most documentation here is sourced from the following pages:
  - https://www.realtimetrains.co.uk/about/developer/pull/docs/locationlist/
  - https://www.realtimetrains.co.uk/about/developer/pull/docs/serviceinfo/
 The only modifications made is adding in JSDoc links to make navigating the types easier and updating wordings to account for different types for Simple and Detailed mode
 */
 
 export type RTTLocationDetail = {
+  /**
+   * Text name of the relevant location, example: London Waterloo
+   */
   name: string
+  /**
+   * CRS code for the location, example: WAT
+   */
   crs: string
+  /**
+   * TIPLOC code for the location, example: WATRLMN
+   */
   tiploc: string | string[]
+  /**
+   * Two letter country code for the location, example: GB
+   */
   country: string
+  /**
+   * The system that this location is part of, example: NR
+   */
   system: string
 }
 
@@ -131,9 +146,17 @@ type RTTLocationBase = {
    */
   gbttBookedArrival?: string
   /**
+   * Public Timetable arrival time is on the next day
+   */
+  gbttBookedArrivalNextDay?: boolean
+  /**
    * Public Timetable departure time of the service at this location, in format HHmm
    */
   gbttBookedDeparture?: string
+  /**
+   * Public Timetable departure time is on the next day
+   */
+  gbttBookedDepartureNextDay?: boolean
   /**
    * boolean output as to whether this service makes a public call at this location. This is set as true even if the service ends up non-stopping this station for whatever reason.
    */
@@ -146,6 +169,10 @@ type RTTLocationBase = {
    * Always appears if realtimeArrival is also present. Boolean output stating whether this is an actual or expected time. If true, actual - if false, expected.
    */
   realtimeArrivalActual: boolean
+  /**
+   * Whether the arrival time is on the next day
+   */
+  realtimeArrivalNextDay?: boolean
   /**
    * If set as true, this means that the train has already arrived at this station but no report was received, and a later one has been
    */
@@ -162,6 +189,10 @@ type RTTLocationBase = {
    * Always appears if realtimeDeparture is also present. Boolean output stating whether this is an actual or expected time. If true, actual - if false, expected.
    */
   realtimeDepartureActual: boolean
+  /**
+   * Whether the departure time is on the next day
+   */
+  realtimeDepartureNextDay?: boolean
   /**
    * If set as true, this means that the train has already departed this station but no report was received, and a later one has been
    */
@@ -241,13 +272,25 @@ export type RTTLocationDetailed = RTTLocationBase & {
    */
   wttBookedArrival?: string
   /**
+   * Working Timetable arrival time is on the next day
+   */
+  wttBookedArrivalNextDay?: boolean
+  /**
    * Working Timetable departure time of the service at this location, in format HHmmss
    */
   wttBookedDeparture?: string
   /**
+   * Working Timetable departure time is on the next day
+   */
+  wttBookedDepartureNextDay?: boolean
+  /**
    * Working Timetable passing time of the service at this location, in format HHmmss
    */
   wttBookedPass?: string
+  /**
+   * Working Timetable passing time is on the next day
+   */
+  wttBookedPassNextDay?: boolean
   /**
    * Whether this service calls at this location. This is set as true even if the service ends up non-stopping this station for whatever reason.
    */
@@ -268,6 +311,10 @@ export type RTTLocationDetailed = RTTLocationBase & {
    * Always appears if realtimePass is also present. Boolean output stating whether this is an actual or expected time. If true, actual - if false, expected.
    */
   realtimePassActual: boolean
+  /**
+   * Whether the passing time is on the next day
+   */
+  realtimePassNextDay?: boolean
   /**
    * If set as true, this means that the train has already passed this station but no report was received, and a later one has been
    */
@@ -295,7 +342,13 @@ export type RTTLocationDetailed = RTTLocationBase & {
 }
 
 export type RTTLocationFilter = {
+  /**
+   * {@link RTTLocationDetail} object detailing the origin location searched for
+   */
   origin?: RTTLocationDetail
+  /**
+   * {@link RTTLocationDetail} object detailing the destination location searched for
+   */
   destination?: RTTLocationDetail
 }
 
