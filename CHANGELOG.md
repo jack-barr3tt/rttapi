@@ -1,5 +1,11 @@
 # rttapi
 
+## 0.1.1
+
+### Patch Changes
+
+- 7af3cae: Fix error when no services at location
+
 ## 0.1.0
 
 ### Minor Changes
