@@ -37,7 +37,7 @@ export function mapContainer(inContainer: RTTContainer): Container {
   return {
     location: mapLocationDetail(inContainer.location),
     filter: mapLocationFilter(inContainer.filter),
-    services: inContainer.services.map(mapLocationContainer),
+    services: inContainer.services?.map(mapLocationContainer) ?? [],
   }
 }
 
@@ -45,7 +45,7 @@ export function mapContainerDetailed(inContainer: RTTContainerDetailed): Contain
   return {
     location: mapLocationDetail(inContainer.location),
     filter: mapLocationFilter(inContainer.filter),
-    services: inContainer.services.map(mapLocationContainerDetailed),
+    services: inContainer.services?.map(mapLocationContainerDetailed) ?? [],
   }
 }
 

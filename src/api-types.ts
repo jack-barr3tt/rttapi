@@ -367,14 +367,14 @@ export type RTTContainer = RTTContainerBase & {
   /**
    * Array of {@link RTTLocationContainer} containing the location information and service metadata
    */
-  services: RTTLocationContainer[]
+  services: RTTLocationContainer[] | null
 }
 
 export type RTTContainerDetailed = RTTContainerBase & {
   /**
    * Array of {@link RTTLocationContainerDetailed} containing the location information and service metadata
    */
-  services: RTTLocationContainerDetailed[]
+  services: RTTLocationContainerDetailed[] | null
 }
 
 type RTTServiceBase = {
